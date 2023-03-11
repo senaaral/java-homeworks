@@ -1,0 +1,80 @@
+Homework-007
+1---------------------------------------------------------------------------------------------------------------------
+package csd;
+
+class App {
+	public static void main(String [] args)	
+	{		
+		SameDiceProbabilitySimulationApp.run();
+	}
+}
+
+class SameDiceProbabilitySimulationApp {
+	public static void run()
+	{
+		java.util.Scanner kb = new java.util.Scanner(System.in);
+		
+		for (;;) {
+			System.out.print("Para kaç kez atılsın:");
+			int n = Integer.parseInt(kb.nextLine());
+			
+			
+			if (n <= 0)
+				break;
+			
+			SameDiceProbabilitySimulation simulation = new SameDiceProbabilitySimulation();
+			
+			simulation.run(n);
+			System.out.printf("Çift gelme olasılığı:%f%n", simulation.p);
+		}
+	}
+}
+
+class SameDiceProbabilitySimulation {
+	public double p;
+	
+	public static boolean areSame(java.util.Random r)
+	{
+		double p1 = r.nextInt(1, 100);
+		double p2 = r.nextInt(1, 100);
+		double p3 = r.nextInt(1, 100);
+		double max = Math.max(p2, Math.max(p1, p3));
+		double min = Math.min(p2, Math.min(p1, p3));
+		double mid = p1 + p2 + p3 - min - max;
+		long sum = (long)(p1 + p2 + p3);
+		return sum > 150 && NumberUtil.isPrime(sum) && (max - min < mid);
+	}
+
+	
+	public static int calculateTailCount(int n)
+	{
+		java.util.Random r = new java.util.Random();
+		int count = 0;
+		
+		for (int i = 0; i < n; ++i)
+			if (areSame(r))
+				++count;
+		
+		return count;
+	}
+	
+	
+	public void run(int n)
+	{
+		p = calculateTailCount(n) / (double)n;
+	}
+}
+
+class NumberUtil {
+	public static boolean isPrime(long a)
+	{
+		if (a <= 1)
+			return false;
+		
+		for (long i = 2; i <= a / 2; ++i)
+			if (a % i == 0)
+				return false;
+		
+		return true;
+	}
+}------------------------------------------------------------------------------------------------0,064767
